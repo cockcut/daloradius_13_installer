@@ -84,9 +84,9 @@ echo "--- 4. EAP 인증서 설정 중..."
 sudo sed -i -E 's/^(default_days\s*=\s*)(.*)$/\13650/' ${freeradius_path}/certs/server.cnf
 sudo sed -i -E 's/^(default_days\s*=\s*)(.*)$/\13650/' ${freeradius_path}/certs/ca.cnf
 cd $freeradius_path/certs
-rm -f *.pem *.der *.csr *.crt *.key *.p12 serial* index.txt*
-./bootstrap
-chmod -R 755 $freeradius_path/certs/
+sudo rm -f *.pem *.der *.csr *.crt *.key *.p12 serial* index.txt*
+sudo ./bootstrap
+sudo chmod -R 755 $freeradius_path/certs/
 cd -
 
 # --- 5. FreeRADIUS 설정 (EAP & Accounting 포함) ---
