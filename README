@@ -8,14 +8,14 @@
 
 <설치 방법>
 1) 먼저 설치해야한 프로그램 git, httpd 설치
-   dnf -y install git httpd
+   sudo dnf -y install git httpd
 
 2) cd /var/www/html/
 
 3) 3-1) 또는 3-2) 선택해서 실행.
 
 3-1) 한줄로 명령어 실행.
-git clone https://github.com/cockcut/daloradius_13_installer private; cd private; chmod +x radius_install.sh; ./radius_install.sh
+   sudo git clone https://github.com/cockcut/daloradius_13_installer private; cd private; chmod +x radius_install.sh; ./radius_install.sh
 
 아래 입력 프롬트프에서 Enter(default 적용됨) 또는 입력값 입력후 Enter
 
@@ -30,7 +30,7 @@ git clone https://github.com/cockcut/daloradius_13_installer private; cd private
 
    3-2-1) git 레포지토리 복사하여 private 폴더에 다운로그 하기
 
-      git clone https://github.com/cockcut/daloradius_13_installer private
+      sudo git clone https://github.com/cockcut/daloradius_13_installer private
 
    3-2-2) 다운받은 private 폴더로 이동
 
@@ -38,11 +38,11 @@ git clone https://github.com/cockcut/daloradius_13_installer private; cd private
 
    3-2-3) 자동설치 스크립트에 실행권한 주기
 
-      chmod +x radius_install.sh
+      sudo chmod +x radius_install.sh
 
    3-2-4) 자동설치 스크립트에 실행
    
-      ./radius_install.sh
+      sudo ./radius_install.sh
 
       아래 입력 프롬트프에서 Enter(default 적용됨) 또는 입력값 입력후 Enter
 
