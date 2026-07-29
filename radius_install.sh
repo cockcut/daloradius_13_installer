@@ -13,8 +13,8 @@ freeradius_path="/etc/raddb"
 
 # --- 1. 필수 패키지 설치 ---
 echo "--- 1. 필수 패키지 설치 중..."
-dnf -y install freeradius freeradius-mysql freeradius-utils mysql mysql-server httpd php php-mysqlnd php-gd php-ldap php-pear php-xml unzip wget openssl
-pear install DB
+sudo dnf -y install freeradius freeradius-mysql freeradius-utils mysql mysql-server httpd php php-mysqlnd php-gd php-ldap php-pear php-xml unzip wget openssl firewalld
+sudo pear install DB
 
 # --- 2. daloRADIUS 파일 다운로드 및 압축 해제 ---
 echo "--- 2. daloRADIUS 파일 다운로드 및 압축 해제 중..."
@@ -25,15 +25,15 @@ else
     echo "--- ${DALORADIUS_ZIP} 파일이 이미 존재합니다. 다운로드를 건너뜁니다."
 fi
 
-rm -rf "${WEB_ROOT}/daloradius*"
-rm -rf "${WEB_ROOT}/radius*"
-unzip "${DALORADIUS_ZIP}"
-mv "${WEB_ROOT}/daloradius-1.3" "${WEB_ROOT}/radius"
+sudo rm -rf "${WEB_ROOT}/daloradius*"
+sudo rm -rf "${WEB_ROOT}/radius*"
+sudo unzip "${DALORADIUS_ZIP}"
+sudo mv "${WEB_ROOT}/daloradius-1.3" "${WEB_ROOT}/radius"
 
 # --- 3. MySQL/MariaDB 데이터베이스 설정 ---
 echo "--- 3. MySQL/MariaDB 데이터베이스 설정 중..."
-systemctl start mysqld
-systemctl enable mysqld
+sudo systemctl start mysqld
+sudo systemctl enable mysqld
 
 read -sp "MySQL/MariaDB root 비밀번호를 입력하세요: " MYSQL_ROOT_PASSWORD
 echo ""
@@ -56,7 +56,7 @@ if ! mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT 1" &> /dev/null; then
     
     # MariaDB 초기 설정 (이전 오류 해결)
     # MariaDB 설치 후 초기 비밀번호가 없는 상태에서 root 비밀번호를 설정
-    mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+    sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
     if [ $? -ne 0 ]; then
         echo "오류: MySQL/MariaDB root 비밀번호 설정에 실패했습니다. 스크립트를 종료합니다."
         exit 1
@@ -68,15 +68,15 @@ fi
 
 # 데이터베이스와 사용자 생성
 echo "MySQL DB(${MYSQL_DATABASE})를 초기화합니다."
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP DATABASE IF EXISTS \`${MYSQL_DATABASE}\`"
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP DATABASE IF EXISTS \`${MYSQL_DATABASE}\`"
 echo "MySQL DB(${MYSQL_DATABASE})를 다시 생성합니다."
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`"
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'${MYSQL_HOST}' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'${MYSQL_HOST}';"
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`"
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'${MYSQL_HOST}' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'${MYSQL_HOST}';"
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"
 echo "MySQL/MariaDB database와 사용자 생성 완료."
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < "${freeradius_path}/mods-config/sql/main/mysql/schema.sql"
-mysql -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < "${WEB_ROOT}/radius/contrib/db/mysql-daloradius.sql"
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < "${freeradius_path}/mods-config/sql/main/mysql/schema.sql"
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < "${WEB_ROOT}/radius/contrib/db/mysql-daloradius.sql"
 echo "MySQL/MariaDB database 적용 완료."
 
 # --- 4. EAP 인증서 설정 ---
@@ -91,7 +91,7 @@ cd -
 
 # --- 5. FreeRADIUS 설정 (EAP & Accounting 포함) ---
 echo "--- 5. FreeRADIUS 설정 중..."
-cp -f ./sql ${freeradius_path}/mods-available/
+sudo cp -f ./sql ${freeradius_path}/mods-available/
 ####sed -i 's|driver = "rlm_sql_null"|driver = "rlm_sql_mysql"|' ${freeradius_path}/mods-available/sql
 ####sed -i 's|dialect = "sqlite"|dialect = "mysql"|' ${freeradius_path}/mods-available/sql
 sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' ${freeradius_path}/mods-available/sqlcounter
@@ -103,65 +103,67 @@ sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' ${freeradius_path
 ####sed -i 's|^#\s*login = .*|login = "'$MYSQL_USER'"|' ${freeradius_path}/mods-available/sql
 ####sed -i 's#/etc/ssl#/etc/raddb#g' ${freeradius_path}/mods-available/sql
 ####sed -i 's#/etc/raddb/certs/private#/etc/raddb/certs#g' ${freeradius_path}/mods-available/sql
-sed -i 's/-sql/sql/g' ${freeradius_path}/sites-available/default
-sed -i '/^#\s*update request {/,/^#\s*}/s/^#\s*//' ${freeradius_path}/sites-available/default
-rm ${freeradius_path}/mods-enabled/sql
-rm ${freeradius_path}/mods-enabled/sqlcounter
-rm ${freeradius_path}/mods-enabled/sqlippool
-ln -s ${freeradius_path}/mods-available/sql ${freeradius_path}/mods-enabled/sql
-ln -s ${freeradius_path}/mods-available/sqlcounter ${freeradius_path}/mods-enabled/sqlcounter
-ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-enabled/sqlippool
+sudo sed -i 's/-sql/sql/g' ${freeradius_path}/sites-available/default
+sudo sed -i '/^#\s*update request {/,/^#\s*}/s/^#\s*//' ${freeradius_path}/sites-available/default
+sudo rm ${freeradius_path}/mods-enabled/sql
+sudo rm ${freeradius_path}/mods-enabled/sqlcounter
+sudo rm ${freeradius_path}/mods-enabled/sqlippool
+sudo ln -s ${freeradius_path}/mods-available/sql ${freeradius_path}/mods-enabled/sql
+sudo ln -s ${freeradius_path}/mods-available/sqlcounter ${freeradius_path}/mods-enabled/sqlcounter
+sudo ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-enabled/sqlippool
 
 # --- 6. daloRADIUS 설정 ---
 echo "--- 6. daloRADIUS 설정 중..."
-cp "${WEB_ROOT}/radius/library/daloradius.conf.php.sample" "${WEB_ROOT}/radius/library/daloradius.conf.php"
+sudo cp "${WEB_ROOT}/radius/library/daloradius.conf.php.sample" "${WEB_ROOT}/radius/library/daloradius.conf.php"
 ####sed -i "s/\$configValues\['CONFIG_DB_ENGINE'\] = '.*';/\$configValues\['CONFIG_DB_ENGINE'\] = 'mysqli';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = '.*';/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sed -i "s/\$configValues\['CONFIG_DB_USER'\] = '.*';/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = '.*';/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = '.*';/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-chown -R apache:apache "${WEB_ROOT}/radius"
-chmod -R 775 "${WEB_ROOT}/radius"
+sudo sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = '.*';/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
+sudo sed -i "s/\$configValues\['CONFIG_DB_USER'\] = '.*';/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
+sudo sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = '.*';/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
+sudo sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = '.*';/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
+sudo chown -R apache:apache "${WEB_ROOT}/radius"
+sudo chmod -R 775 "${WEB_ROOT}/radius"
 
 # --- 7. daloRADIUS에 NAS 추가후 radius 재시작 버튼 추가하기 위한 파일 수정 ---
 echo "--- 7. menu-mng-rad-nas.php, mng-rad-nas.php 수정중..."
-cp -f ./menu-mng-rad-nas.php ./radius
-cp -f ./mng-rad-nas.php ./radius
+sudo cp -f ./menu-mng-rad-nas.php ./radius
+sudo cp -f ./mng-rad-nas.php ./radius
 
 # --- 7-1. daloRADIUS에 Accounting Table 수정 ---
-cp -f ./rep-online.php ./radius
+sudo cp -f ./rep-online.php ./radius
 
 # --- 7-3. daloRADIUS에서 로그 보기위해 수정 ---
-touch /var/log/daloradius.log
-chmod 777 /var/log/daloradius.log
-sed -i "s/\$configValues\['CONFIG_LOG_FILE'\] = '.*';/\$configValues\['CONFIG_LOG_FILE'\] = '\/var\/log\/daloradius.log';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-chmod -R 755 /var/log/radius/
+sudo touch /var/log/daloradius.log
+sudo chmod 777 /var/log/daloradius.log
+sudo sed -i "s/\$configValues\['CONFIG_LOG_FILE'\] = '.*';/\$configValues\['CONFIG_LOG_FILE'\] = '\/var\/log\/daloradius.log';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
+sudo chmod -R 755 /var/log/radius/
 
 # --- 8. 서비스 시작 및 방화벽 설정 ---
 echo "--- 8. 서비스 시작 및 방화벽 설정 중..."
-systemctl start httpd
-systemctl enable httpd
-systemctl restart radiusd
-systemctl enable radiusd
-firewall-cmd --add-service=http --permanent
-firewall-cmd --add-service=https --permanent
-firewall-cmd --add-port=1812/udp --permanent
-firewall-cmd --add-port=1813/udp --permanent
-firewall-cmd --reload
+sudo systemctl start httpd
+sudo systemctl enable httpd
+sudo systemctl restart radiusd
+sudo systemctl enable radiusd
+sudo systemctl enable firewalld
+sudo systemctl restart firewalld
+sudo firewall-cmd --add-service=http --permanent
+sudo firewall-cmd --add-service=https --permanent
+sudo firewall-cmd --add-port=1812/udp --permanent
+sudo firewall-cmd --add-port=1813/udp --permanent
+sudo firewall-cmd --reload
 #SElinux 허용
-setenforce 0
+sudo setenforce 0
 # --- SELINUX=enforcing 일 경우에만 SELINUX=permissive로 변경 ---
-sed -i '/^SELINUX=enforcing/s/enforcing/permissive/' /etc/selinux/config
+sudo sed -i '/^SELINUX=enforcing/s/enforcing/permissive/' /etc/selinux/config
 
 # --- 9. 설치에 필요한 임시 파일들을 삭제 ---
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제중..."
-rm -f 1.3.zip
-mv README radius
-rm -f menu-mng-rad-nas.php
-rm -f mng-rad-nas.php
-rm -f radius_install.sh
-rm -f rep-online.php
-rm -f sql
+sudo rm -f 1.3.zip
+sudo mv README radius
+sudo rm -f menu-mng-rad-nas.php
+sudo rm -f mng-rad-nas.php
+sudo rm -f radius_install.sh
+sudo rm -f rep-online.php
+sudo rm -f sql
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제 완료"
 
 echo "==============================================="
