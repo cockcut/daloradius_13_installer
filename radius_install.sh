@@ -20,7 +20,7 @@ sudo pear install DB
 echo "--- 2. daloRADIUS 파일 다운로드 및 압축 해제 중..."
 if [ ! -f "${DALORADIUS_ZIP}" ]; then
     echo "--- ${DALORADIUS_ZIP} 파일이 존재하지 않아 다운로드합니다."
-    wget "${DALORADIUS_URL}"
+    sudo wget "${DALORADIUS_URL}"
 else
     echo "--- ${DALORADIUS_ZIP} 파일이 이미 존재합니다. 다운로드를 건너뜁니다."
 fi
