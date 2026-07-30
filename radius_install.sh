@@ -109,11 +109,22 @@ sudo cp -f ${WEB_ROOT}/temp/sql ${freeradius_path}/mods-available/
 sudo cp "$freeradius_path/mods-available/sqlcounter" "$freeradius_path/mods-available/sqlcounter.bak"
 sudo sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' "$freeradius_path/mods-available/sqlcounter"
 ####sed -i 's|#\s*read_clients = yes|read_clients = yes|' ${freeradius_path}/mods-available/sql
-sudo sed -i 's|^#\s*server = .*|server = "'$MYSQL_HOST'"|' "${freeradius_path}/mods-available/sql"
-sudo sed -i 's|^#\s*port = .*|port = "'$MYSQL_PORT'"|' "${freeradius_path}/mods-available/sql"
-sudo sed -i '1,$s/radius_db.*/radius_db="'$MYSQL_DATABASE'"/g' "${freeradius_path}/mods-available/sql"
-sudo sed -i 's|^#\s*password = .*|password = "'$MYSQL_PASSWORD'"|' "${freeradius_path}/mods-available/sql"
-sudo sed -i 's|^#\s*login = .*|login = "'$MYSQL_USER'"|' "${freeradius_path}/mods-available/sql"
+
+####sudo sed -i 's|^#\s*server = .*|server = "'$MYSQL_HOST'"|' "${freeradius_path}/mods-available/sql"
+sudo sed -ri "s|^[[:space:]]*#?[[:space:]]*server[[:space:]]*=.*|server = \"${MYSQL_HOST}\"|" "${freeradius_path}/mods-available/sql"
+
+####sudo sed -i 's|^#\s*port = .*|port = "'$MYSQL_PORT'"|' "${freeradius_path}/mods-available/sql"
+sudo sed -ri "s|^[[:space:]]*#?[[:space:]]*port[[:space:]]*=.*|port = ${MYSQL_PORT}|" "${freeradius_path}/mods-available/sql"
+
+####sudo sed -i '1,$s/radius_db.*/radius_db="'$MYSQL_DATABASE'"/g' "${freeradius_path}/mods-available/sql"
+sudo sed -ri "s|^[[:space:]]*#?[[:space:]]*radius_db[[:space:]]*=.*|radius_db = \"${MYSQL_DATABASE}\"|" "${freeradius_path}/mods-available/sql"
+
+####sudo sed -i 's|^#\s*login = .*|login = "'$MYSQL_USER'"|' "${freeradius_path}/mods-available/sql"
+sudo sed -ri "s|^[[:space:]]*#?[[:space:]]*login[[:space:]]*=.*|login = \"${MYSQL_USER}\"|" "${freeradius_path}/mods-available/sql"
+
+####sudo sed -i 's|^#\s*password = .*|password = "'$MYSQL_PASSWORD'"|' "${freeradius_path}/mods-available/sql"
+sudo sed -ri "s|^[[:space:]]*#?[[:space:]]*password[[:space:]]*=.*|password = \"${MYSQL_PASSWORD}\"|" "${freeradius_path}/mods-available/sql"
+
 ####sed -i 's#/etc/ssl#/etc/raddb#g' ${freeradius_path}/mods-available/sql
 ####sed -i 's#/etc/raddb/certs/private#/etc/raddb/certs#g' ${freeradius_path}/mods-available/sql
 sudo cp "$freeradius_path/sites-available/default" "$freeradius_path/sites-available/default.bak"
