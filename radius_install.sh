@@ -101,6 +101,7 @@ sudo cp -f ${WEB_ROOT}/temp/sql ${freeradius_path}/mods-available/
 ####sed -i 's|driver = "rlm_sql_null"|driver = "rlm_sql_mysql"|' ${freeradius_path}/mods-available/sql
 ####sed -i 's|dialect = "sqlite"|dialect = "mysql"|' ${freeradius_path}/mods-available/sql
 #####sudo sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' ${freeradius_path}/mods-available/sqlcounter
+sudo cp "$freeradius_path/mods-available/sqlcounter" "$freeradius_path/mods-available/sqlcounter.bak"
 sudo sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' "$freeradius_path/mods-available/sqlcounter"
 ####sed -i 's|#\s*read_clients = yes|read_clients = yes|' ${freeradius_path}/mods-available/sql
 ####sed -i 's|^#\s*server = .*|server = "'$MYSQL_HOST'"|' ${freeradius_path}/mods-available/sql
@@ -110,10 +111,10 @@ sudo sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' "$freeradius
 ####sed -i 's|^#\s*login = .*|login = "'$MYSQL_USER'"|' ${freeradius_path}/mods-available/sql
 ####sed -i 's#/etc/ssl#/etc/raddb#g' ${freeradius_path}/mods-available/sql
 ####sed -i 's#/etc/raddb/certs/private#/etc/raddb/certs#g' ${freeradius_path}/mods-available/sql
+sudo cp "$freeradius_path/sites-available/default" "$freeradius_path/sites-available/default.bak"
 #####sudo sed -i 's/-sql/sql/g' ${freeradius_path}/sites-available/default
 sudo sed -i 's/-sql/sql/g' "$freeradius_path/sites-available/default"
 #####sudo sed -i '/^#\s*update request {/,/^#\s*}/s/^#\s*//' ${freeradius_path}/sites-available/default
-sudo sed -i '/^#\s*update request {/,/^#\s*}/s/^#\s*//' "$freeradius_path/sites-available/default"
 sudo rm ${freeradius_path}/mods-enabled/sql
 sudo rm ${freeradius_path}/mods-enabled/sqlcounter
 sudo rm ${freeradius_path}/mods-enabled/sqlippool
