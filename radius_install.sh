@@ -13,6 +13,8 @@ freeradius_path="/etc/raddb"
 
 # --- 1. 필수 패키지 설치 ---
 echo "--- 1. 필수 패키지 설치 중..."
+sudo dnf -y remove freeradius freeradius-mysql freeradius-utils
+sudo rm -rf /etc/raddb
 sudo dnf -y install freeradius freeradius-mysql freeradius-utils mysql mysql-server httpd php php-mysqlnd php-gd php-ldap php-pear php-xml unzip wget openssl firewalld
 sudo pear install DB
 
