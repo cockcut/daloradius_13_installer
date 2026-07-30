@@ -91,7 +91,7 @@ sudo sed -i -E 's/^(default_days\s*=\s*)(.*)$/\13650/' ${freeradius_path}/certs/
 sudo sed -i -E 's/^(default_days\s*=\s*)(.*)$/\13650/' ${freeradius_path}/certs/ca.cnf
 sudo cd ${freeradius_path}/certs
 sudo rm -f *.pem *.der *.csr *.crt *.key *.p12 serial* index.txt*
-sudo ./bootstrap
+sudo ${freeradius_path}/certs/bootstrap
 sudo chmod -R 755 $freeradius_path/certs/
 sudo cd ${WEB_ROOT}/radius
 
