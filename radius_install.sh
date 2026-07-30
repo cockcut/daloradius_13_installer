@@ -166,14 +166,18 @@ sudo sed -i '/^SELINUX=enforcing/s/enforcing/permissive/' /etc/selinux/config
 
 # --- 9. 설치에 필요한 임시 파일들을 삭제 ---
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제중..."
+cd ${WEB_ROOT}/temp
 sudo rm -f 1.3.zip
-sudo mv README radius
+sudo mv ./README ../radius
 sudo rm -f menu-mng-rad-nas.php
 sudo rm -f mng-rad-nas.php
 sudo rm -f radius_install.sh
 sudo rm -f rep-online.php
 sudo rm -f sql
+cd ../
+sudo rm -rf ${WEB_ROOT}/temp
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제 완료"
+cd ${WEB_ROOT}/radius
 
 echo "==============================================="
 echo "✅ daloRADIUS 설치가 완료되었습니다!"
