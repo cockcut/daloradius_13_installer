@@ -15,7 +15,7 @@
 3) 3-1) 또는 3-2) 선택해서 실행.
 
 3-1) 한줄로 명령어 실행.
-   sudo git clone https://github.com/cockcut/daloradius_13_installer temp; cd temp; sudo chmod +x radius_install.sh; ./radius_install.sh; cd ../radius
+   sudo git clone https://github.com/cockcut/daloradius_13_installer temp; cd temp; sudo chmod +x radius_install.sh; ./radius_install.sh; sudo cd ../radius
 
 아래 입력 프롬트프에서 Enter(default 적용됨) 또는 입력값 입력후 Enter
 
