@@ -89,7 +89,7 @@ cd $freeradius_path/certs
 sudo rm -f *.pem *.der *.csr *.crt *.key *.p12 serial* index.txt*
 sudo ./bootstrap
 sudo chmod -R 755 $freeradius_path/certs/
-cd ${WEB_ROOT}/radius
+cd ${WEB_ROOT}/temp
 
 # --- 5. FreeRADIUS 설정 (EAP & Accounting 포함) ---
 echo "--- 5. FreeRADIUS 설정 중..."
