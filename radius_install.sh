@@ -68,12 +68,17 @@ else
     echo "정보: MySQL root 비밀번호 접속에 성공했습니다. 초기 설정을 건너뜁니다."
 fi
 
-# 데이터베이스와 사용자 생성
-echo "MySQL DB(${MYSQL_DATABASE})와 사용자(${MYSQL_USER})를 초기화합니다."
+# 데이터베이스와 사용자 초기화
+echo "MySQL DB(${MYSQL_DATABASE})를 초기화합니다."
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP DATABASE IF EXISTS \`${MYSQL_DATABASE}\`"
-sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP USER '${MYSQL_USER}'@'${MYSQL_HOST}'"
 
-echo "MySQL DB(${MYSQL_DATABASE})를 다시 생성합니다."
+# 사용자 초기화
+echo "MySQL의 Radius DB 사용자(${MYSQL_USER})를 초기화합니다."
+#####sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP USER '${MYSQL_USER}'@'${MYSQL_HOST}'"
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP USER IF EXISTS '${MYSQL_USER}'@'${MYSQL_HOST}';"
+
+# 데이터베이스와 사용자 생성
+echo "MySQL DB(${MYSQL_DATABASE})와 사용자(${MYSQL_USER})를 다시 생성합니다."
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`"
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'${MYSQL_HOST}' IDENTIFIED BY '${MYSQL_PASSWORD}';"
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'${MYSQL_HOST}';"
