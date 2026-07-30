@@ -75,6 +75,7 @@ sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER IF NOT EXISTS '${M
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'${MYSQL_HOST}';"
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"
 echo "MySQL/MariaDB database와 사용자 생성 완료."
+sudo -i
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < "${freeradius_path}/mods-config/sql/main/mysql/schema.sql"
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < "${WEB_ROOT}/radius/contrib/db/mysql-daloradius.sql"
 echo "MySQL/MariaDB database 적용 완료."
@@ -165,6 +166,7 @@ sudo rm -f radius_install.sh
 sudo rm -f rep-online.php
 sudo rm -f sql
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제 완료"
+exit
 
 echo "==============================================="
 echo "✅ daloRADIUS 설치가 완료되었습니다!"
