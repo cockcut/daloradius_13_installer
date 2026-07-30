@@ -74,7 +74,6 @@ sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP DATABASE IF EXISTS \`${MY
 
 # 사용자 초기화
 echo "MySQL의 Radius DB 사용자(${MYSQL_USER})를 초기화합니다."
-#####sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP USER '${MYSQL_USER}'@'${MYSQL_HOST}'"
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "DROP USER IF EXISTS '${MYSQL_USER}'@'${MYSQL_HOST}';"
 
 # 데이터베이스와 사용자 생성
@@ -84,9 +83,7 @@ sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER IF NOT EXISTS '${M
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'${MYSQL_HOST}';"
 sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"
 echo "MySQL/MariaDB database와 사용자 생성 완료."
-#sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < "${freeradius_path}/mods-config/sql/main/mysql/schema.sql"
 sudo bash -c "mysql -u root -p\"${MYSQL_ROOT_PASSWORD}\" ${MYSQL_DATABASE} < \"${freeradius_path}/mods-config/sql/main/mysql/schema.sql\""
-#sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" ${MYSQL_DATABASE} < "${WEB_ROOT}/radius/contrib/db/mysql-daloradius.sql"
 sudo bash -c "mysql -u root -p\"${MYSQL_ROOT_PASSWORD}\" ${MYSQL_DATABASE} < \"${WEB_ROOT}/radius/contrib/db/mysql-daloradius.sql\""
 echo "MySQL/MariaDB database 적용 완료."
 
@@ -108,32 +105,22 @@ sudo cp -f ${WEB_ROOT}/temp/sql ${freeradius_path}/mods-available/
 #####sudo sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' ${freeradius_path}/mods-available/sqlcounter
 sudo cp "$freeradius_path/mods-available/sqlcounter" "$freeradius_path/mods-available/sqlcounter.bak"
 sudo sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' "$freeradius_path/mods-available/sqlcounter"
-####sed -i 's|#\s*read_clients = yes|read_clients = yes|' ${freeradius_path}/mods-available/sql
+####sudo sed -i 's|#\s*read_clients = yes|read_clients = yes|' ${freeradius_path}/mods-available/sql
 
-####sudo sed -i 's|^#\s*server = .*|server = "'$MYSQL_HOST'"|' "${freeradius_path}/mods-available/sql"
 sudo sed -i 's|^server = .*|server = "'$MYSQL_HOST'"|' "${freeradius_path}/mods-available/sql"
-
-####sudo sed -i 's|^#\s*port = .*|port = "'$MYSQL_PORT'"|' "${freeradius_path}/mods-available/sql"
 sudo sed -i 's|^port = .*|port = "'$MYSQL_PORT'"|' "${freeradius_path}/mods-available/sql"
-
-####sudo sed -i '1,$s/radius_db.*/radius_db="'$MYSQL_DATABASE'"/g' "${freeradius_path}/mods-available/sql"
 sudo sed -i 's|^radius_db= .*|radius_db= "'$MYSQL_DATABASE'"|' "${freeradius_path}/mods-available/sql"
-
-####sudo sed -i 's|^#\s*login = .*|login = "'$MYSQL_USER'"|' "${freeradius_path}/mods-available/sql"
 sudo sed -i 's|^login = .*|login = "'$MYSQL_USER'"|' "${freeradius_path}/mods-available/sql"
-
-####sudo sed -i 's|^#\s*password = .*|password = "'$MYSQL_PASSWORD'"|' "${freeradius_path}/mods-available/sql"
 sudo sed -i 's|^password = .*|password = "'$MYSQL_PASSWORD'"|' "${freeradius_path}/mods-available/sql"
 
 ####sed -i 's#/etc/ssl#/etc/raddb#g' ${freeradius_path}/mods-available/sql
 ####sed -i 's#/etc/raddb/certs/private#/etc/raddb/certs#g' ${freeradius_path}/mods-available/sql
 sudo cp "$freeradius_path/sites-available/default" "$freeradius_path/sites-available/default.bak"
-#####sudo sed -i 's/-sql/sql/g' ${freeradius_path}/sites-available/default
 sudo sed -i 's/-sql/sql/g' "$freeradius_path/sites-available/default"
 #####sudo sed -i '/^#\s*update request {/,/^#\s*}/s/^#\s*//' ${freeradius_path}/sites-available/default
-sudo rm ${freeradius_path}/mods-enabled/sql
-sudo rm ${freeradius_path}/mods-enabled/sqlcounter
-sudo rm ${freeradius_path}/mods-enabled/sqlippool
+sudo rm -f ${freeradius_path}/mods-enabled/sql
+sudo rm -f ${freeradius_path}/mods-enabled/sqlcounter
+sudo rm -f ${freeradius_path}/mods-enabled/sqlippool
 sudo ln -s ${freeradius_path}/mods-available/sql ${freeradius_path}/mods-enabled/sql
 sudo ln -s ${freeradius_path}/mods-available/sqlcounter ${freeradius_path}/mods-enabled/sqlcounter
 sudo ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-enabled/sqlippool
@@ -142,13 +129,9 @@ sudo ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-e
 echo "--- 6. daloRADIUS 설정 중..."
 sudo cp "${WEB_ROOT}/radius/library/daloradius.conf.php.sample" "${WEB_ROOT}/radius/library/daloradius.conf.php"
 ####sed -i "s/\$configValues\['CONFIG_DB_ENGINE'\] = '.*';/\$configValues\['CONFIG_DB_ENGINE'\] = 'mysqli';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-#####sudo sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = '.*';/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
 sudo sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = '.*';/\$configValues\['CONFIG_DB_HOST'\] = '${MYSQL_HOST}';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-#####sudo sed -i "s/\$configValues\['CONFIG_DB_USER'\] = '.*';/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
 sudo sed -i "s/\$configValues\['CONFIG_DB_USER'\] = '.*';/\$configValues\['CONFIG_DB_USER'\] = '${MYSQL_USER}';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-#####sudo sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = '.*';/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
 sudo sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = '.*';/\$configValues\['CONFIG_DB_PASS'\] = '${MYSQL_PASSWORD}';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-#####sudo sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = '.*';/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
 sudo sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = '.*';/\$configValues\['CONFIG_DB_NAME'\] = '${MYSQL_DATABASE}';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
 sudo chown -R apache:apache "${WEB_ROOT}/radius"
 sudo chmod -R 775 "${WEB_ROOT}/radius"
@@ -188,13 +171,7 @@ sudo sed -i '/^SELINUX=enforcing/s/enforcing/permissive/' /etc/selinux/config
 # --- 9. 설치에 필요한 임시 파일들을 삭제 ---
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제중..."
 sudo cd ${WEB_ROOT}/temp
-sudo rm -f 1.3.zip
 sudo mv ./README ../radius
-sudo rm -f menu-mng-rad-nas.php
-sudo rm -f mng-rad-nas.php
-sudo rm -f radius_install.sh
-sudo rm -f rep-online.php
-sudo rm -f sql
 sudo cd ../
 sudo rm -rf ${WEB_ROOT}/temp
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제 완료"
