@@ -8,7 +8,7 @@
 # --- 필수 변수 설정 ---
 DALORADIUS_ZIP="1.3.zip"
 DALORADIUS_URL="https://github.com/lirantal/daloradius/archive/refs/tags/${DALORADIUS_ZIP}"
-WEB_ROOT="/var/www/html/"
+WEB_ROOT="/var/www/html"
 freeradius_path="/etc/raddb"
 
 # --- 1. 필수 패키지 설치 ---
