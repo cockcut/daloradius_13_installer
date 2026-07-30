@@ -94,7 +94,7 @@ echo "--- 5. FreeRADIUS 설정 중..."
 sudo cp -f ./sql ${freeradius_path}/mods-available/
 ####sed -i 's|driver = "rlm_sql_null"|driver = "rlm_sql_mysql"|' ${freeradius_path}/mods-available/sql
 ####sed -i 's|dialect = "sqlite"|dialect = "mysql"|' ${freeradius_path}/mods-available/sql
-sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' ${freeradius_path}/mods-available/sqlcounter
+sudo bash -c 'sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' ${freeradius_path}/mods-available/sqlcounter'
 ####sed -i 's|#\s*read_clients = yes|read_clients = yes|' ${freeradius_path}/mods-available/sql
 ####sed -i 's|^#\s*server = .*|server = "'$MYSQL_HOST'"|' ${freeradius_path}/mods-available/sql
 ####sed -i 's|^#\s*port = .*|port = "'$MYSQL_PORT'"|' ${freeradius_path}/mods-available/sql
@@ -103,25 +103,25 @@ sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' ${freeradius_path
 ####sed -i 's|^#\s*login = .*|login = "'$MYSQL_USER'"|' ${freeradius_path}/mods-available/sql
 ####sed -i 's#/etc/ssl#/etc/raddb#g' ${freeradius_path}/mods-available/sql
 ####sed -i 's#/etc/raddb/certs/private#/etc/raddb/certs#g' ${freeradius_path}/mods-available/sql
-sudo sed -i 's/-sql/sql/g' ${freeradius_path}/sites-available/default
-sudo sed -i '/^#\s*update request {/,/^#\s*}/s/^#\s*//' ${freeradius_path}/sites-available/default
-sudo rm ${freeradius_path}/mods-enabled/sql
-sudo rm ${freeradius_path}/mods-enabled/sqlcounter
-sudo rm ${freeradius_path}/mods-enabled/sqlippool
-sudo ln -s ${freeradius_path}/mods-available/sql ${freeradius_path}/mods-enabled/sql
-sudo ln -s ${freeradius_path}/mods-available/sqlcounter ${freeradius_path}/mods-enabled/sqlcounter
-sudo ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-enabled/sqlippool
+sudo bash -c 'sed -i 's/-sql/sql/g' ${freeradius_path}/sites-available/default'
+sudo bash -c 'sed -i '/^#\s*update request {/,/^#\s*}/s/^#\s*//' ${freeradius_path}/sites-available/default'
+sudo bash -c 'rm ${freeradius_path}/mods-enabled/sql'
+sudo bash -c 'rm ${freeradius_path}/mods-enabled/sqlcounter'
+sudo bash -c 'rm ${freeradius_path}/mods-enabled/sqlippool'
+sudo bash -c 'ln -s ${freeradius_path}/mods-available/sql ${freeradius_path}/mods-enabled/sql'
+sudo bash -c 'ln -s ${freeradius_path}/mods-available/sqlcounter ${freeradius_path}/mods-enabled/sqlcounter'
+sudo bash -c 'ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-enabled/sqlippool'
 
 # --- 6. daloRADIUS 설정 ---
 echo "--- 6. daloRADIUS 설정 중..."
-sudo cp "${WEB_ROOT}/radius/library/daloradius.conf.php.sample" "${WEB_ROOT}/radius/library/daloradius.conf.php"
+sudo bash -c 'cp "${WEB_ROOT}/radius/library/daloradius.conf.php.sample" "${WEB_ROOT}/radius/library/daloradius.conf.php"'
 ####sed -i "s/\$configValues\['CONFIG_DB_ENGINE'\] = '.*';/\$configValues\['CONFIG_DB_ENGINE'\] = 'mysqli';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sudo sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = '.*';/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sudo sed -i "s/\$configValues\['CONFIG_DB_USER'\] = '.*';/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sudo sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = '.*';/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sudo sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = '.*';/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sudo chown -R apache:apache "${WEB_ROOT}/radius"
-sudo chmod -R 775 "${WEB_ROOT}/radius"
+sudo bash -c 'sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = '.*';/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"'
+sudo bash -c 'sed -i "s/\$configValues\['CONFIG_DB_USER'\] = '.*';/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"'
+sudo bash -c 'sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = '.*';/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"'
+sudo bash -c 'sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = '.*';/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"'
+sudo bash -c 'chown -R apache:apache "${WEB_ROOT}/radius"'
+sudo bash -c 'chmod -R 775 "${WEB_ROOT}/radius"'
 
 # --- 7. daloRADIUS에 NAS 추가후 radius 재시작 버튼 추가하기 위한 파일 수정 ---
 echo "--- 7. menu-mng-rad-nas.php, mng-rad-nas.php 수정중..."
