@@ -134,11 +134,11 @@ sudo chmod -R 775 "${WEB_ROOT}/radius"
 
 # --- 7. daloRADIUS에 NAS 추가후 radius 재시작 버튼 추가하기 위한 파일 수정 ---
 echo "--- 7. menu-mng-rad-nas.php, mng-rad-nas.php 수정중..."
-sudo cp -f ./menu-mng-rad-nas.php ./radius
-sudo cp -f ./mng-rad-nas.php ./radius
+sudo cp -f ${WEB_ROOT}/temp/menu-mng-rad-nas.php ${WEB_ROOT}/radius
+sudo cp -f ${WEB_ROOT}/temp/mng-rad-nas.php ${WEB_ROOT}/radius
 
 # --- 7-1. daloRADIUS에 Accounting Table 수정 ---
-sudo cp -f ./rep-online.php ./radius
+sudo cp -f ${WEB_ROOT}/temp/rep-online.php ${WEB_ROOT}/radius
 
 # --- 7-3. daloRADIUS에서 로그 보기위해 수정 ---
 sudo touch /var/log/daloradius.log
