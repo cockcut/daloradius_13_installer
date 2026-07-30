@@ -8,7 +8,7 @@
 # --- 필수 변수 설정 ---
 DALORADIUS_ZIP="1.3.zip"
 DALORADIUS_URL="https://github.com/lirantal/daloradius/archive/refs/tags/${DALORADIUS_ZIP}"
-WEB_ROOT="."
+WEB_ROOT="/var/www/html/"
 freeradius_path="/etc/raddb"
 
 # --- 1. 필수 패키지 설치 ---
@@ -51,7 +51,7 @@ echo ""
 
 
 # MySQL root 비밀번호 접속 테스트
-if ! mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT 1" &> /dev/null; then
+if ! sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT 1" &> /dev/null; then
     echo "정보: MySQL root 비밀번호 접속에 실패했습니다. 초기 설정을 시도합니다."
     
     # MariaDB 초기 설정 (이전 오류 해결)
