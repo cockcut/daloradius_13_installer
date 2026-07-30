@@ -89,11 +89,11 @@ echo "MySQL/MariaDB database 적용 완료."
 echo "--- 4. EAP 인증서 설정 중..."
 sudo sed -i -E 's/^(default_days\s*=\s*)(.*)$/\13650/' ${freeradius_path}/certs/server.cnf
 sudo sed -i -E 's/^(default_days\s*=\s*)(.*)$/\13650/' ${freeradius_path}/certs/ca.cnf
-cd $freeradius_path/certs
+sudo cd ${freeradius_path}/certs
 sudo rm -f *.pem *.der *.csr *.crt *.key *.p12 serial* index.txt*
 sudo ./bootstrap
 sudo chmod -R 755 $freeradius_path/certs/
-cd ${WEB_ROOT}/radius
+sudo cd ${WEB_ROOT}/radius
 
 # --- 5. FreeRADIUS 설정 (EAP & Accounting 포함) ---
 echo "--- 5. FreeRADIUS 설정 중..."
@@ -171,7 +171,7 @@ sudo sed -i '/^SELINUX=enforcing/s/enforcing/permissive/' /etc/selinux/config
 
 # --- 9. 설치에 필요한 임시 파일들을 삭제 ---
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제중..."
-cd ${WEB_ROOT}/temp
+sudo cd ${WEB_ROOT}/temp
 sudo rm -f 1.3.zip
 sudo mv ./README ../radius
 sudo rm -f menu-mng-rad-nas.php
@@ -179,10 +179,10 @@ sudo rm -f mng-rad-nas.php
 sudo rm -f radius_install.sh
 sudo rm -f rep-online.php
 sudo rm -f sql
-cd ../
+sudo cd ../
 sudo rm -rf ${WEB_ROOT}/temp
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제 완료"
-cd ${WEB_ROOT}/radius
+sudo cd ${WEB_ROOT}/radius
 
 echo "==============================================="
 echo "✅ daloRADIUS 설치가 완료되었습니다!"
