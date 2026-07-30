@@ -166,7 +166,6 @@ sudo rm -f radius_install.sh
 sudo rm -f rep-online.php
 sudo rm -f sql
 echo "--- 9. 설치에 필요한 임시 파일들을 삭제 완료"
-exit
 
 echo "==============================================="
 echo "✅ daloRADIUS 설치가 완료되었습니다!"
