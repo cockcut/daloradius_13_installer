@@ -129,7 +129,7 @@ sudo sed -i '/^\[client\]/,/^\[/ {
     s/^\(localityName\s*=\s*\).*/\1Seoul/
     s/^\(organizationName\s*=\s*\).*/\1freeradius/
     s/^\(emailAddress\s*=\s*\).*/\1admin@example.org/
-    s/^\(commonName\s*=\s*\).*/\1"hsitx-lab.kro.kr"/
+    s/^\(commonName\s*=\s*\).*/\1"client"/
 }' "${freeradius_path}/certs/client.cnf"
 
 # 4-5. 인증서 재생성 (기존 인증서 삭제 후 bootstrap 실행)
