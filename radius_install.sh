@@ -122,8 +122,15 @@ if ! grep -q "\[alt_names\]" ${freeradius_path}/certs/server.cnf; then
 EOF
 fi
 sudo sed -i 's/DNS\.1\s*=\s*radius\.example\.com/DNS.1 = hsitx-lab.kro.kr/' "${freeradius_path}/certs/server.cnf"
-# clinet.cnf Country 항목 변경 
-sudo sed -i 's/countryName\s*=\s*FR/countryName\t\t= KR/' "${freeradius_path}/certs/client.cnf"
+# clinet.cnf 항목 변경 
+sudo sed -i '/^\[client\]/,/^\[/ {
+    s/^\(countryName\s*=\s*\).*/\1KR/
+    s/^\(stateOrProvinceName\s*=\s*\).*/\1Seoul/
+    s/^\(localityName\s*=\s*\).*/\1Seoul/
+    s/^\(organizationName\s*=\s*\).*/\1freeradius/
+    s/^\(emailAddress\s*=\s*\).*/\1admin@example.org/
+    s/^\(commonName\s*=\s*\).*/\1"hsitx-lab.kro.kr"/
+}' "${freeradius_path}/certs/client.cnf"
 
 # 4-5. 인증서 재생성 (기존 인증서 삭제 후 bootstrap 실행)
 sudo cd ${freeradius_path}/certs
