@@ -106,6 +106,9 @@ sudo cp -f ${WEB_ROOT}/temp/sql ${freeradius_path}/mods-available/
 sudo cp "$freeradius_path/mods-available/sqlcounter" "$freeradius_path/mods-available/sqlcounter.bak"
 sudo sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' "$freeradius_path/mods-available/sqlcounter"
 ####sudo sed -i 's|#\s*read_clients = yes|read_clients = yes|' ${freeradius_path}/mods-available/sql
+#Radius Reply시 attribute 전송하게 함.
+sudo cp "$freeradius_path/sites-available/inner-tunnel" "$freeradius_path/sites-available/inner-tunnel.bak"
+sudo sed -i '/use_tunneled_reply/!b; n; c\		if (1) {' "${freeradius_path}/sites-available/inner-tunnel"
 
 sudo sed -i 's|^server = .*|server = "'$MYSQL_HOST'"|' "${freeradius_path}/mods-available/sql"
 sudo sed -i 's|^port = .*|port = "'$MYSQL_PORT'"|' "${freeradius_path}/mods-available/sql"
