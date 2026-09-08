@@ -89,8 +89,41 @@ echo "MySQL/MariaDB database 적용 완료."
 
 # --- 4. EAP 인증서 설정 ---
 echo "--- 4. EAP 인증서 설정 중..."
+# 4-1. 유효 기간 설정 (10년 / 3650일)
 sudo sed -i -E 's/^(default_days\s*=\s*)(.*)$/\13650/' ${freeradius_path}/certs/server.cnf
 sudo sed -i -E 's/^(default_days\s*=\s*)(.*)$/\13650/' ${freeradius_path}/certs/ca.cnf
+# 4-2. ca.cnf 항목 변경 ([certificate_authority] 섹션)
+sudo sed -i '/^\[certificate_authority\]/,/^\[/ {
+    s/^\(countryName\s*=\s*\).*/\1KR/
+    s/^\(stateOrProvinceName\s*=\s*\).*/\1Seoul/
+    s/^\(localityName\s*=\s*\).*/\1Seoul/
+    s/^\(organizationName\s*=\s*\).*/\1freeradius/
+    s/^\(emailAddress\s*=\s*\).*/\1admin@example.org/
+    s/^\(commonName\s*=\s*\).*/\1"Freeradius Root CA"/
+}' ${freeradius_path}/certs/ca.cnf
+# 4-3. server.cnf 항목 변경 ([server] 섹션)
+sudo sed -i '/^\[server\]/,/^\[/ {
+    s/^\(countryName\s*=\s*\).*/\1KR/
+    s/^\(stateOrProvinceName\s*=\s*\).*/\1Seoul/
+    s/^\(localityName\s*=\s*\).*/\1Seoul/
+    s/^\(organizationName\s*=\s*\).*/\1freeradius/
+    s/^\(emailAddress\s*=\s*\).*/\1admin@example.org/
+    s/^\(commonName\s*=\s*\).*/\1"hsitx-lab.kro.kr"/
+}' ${freeradius_path}/certs/server.cnf
+# 4-4. server.cnf SAN (Subject Alternative Name) 설정 추가
+# v3_req 또는 server 섹션에 subjectAltName 등록 및 alt_names 섹션 추가
+if ! grep -q "subjectAltName" ${freeradius_path}/certs/server.cnf; then
+    sudo sed -i '/\[ v3_req \]/a subjectAltName = @alt_names' ${freeradius_path}/certs/server.cnf
+fi
+
+if ! grep -q "\[alt_names\]" ${freeradius_path}/certs/server.cnf; then
+    cat << 'EOF' | sudo tee -a ${freeradius_path}/certs/server.cnf
+
+[alt_names]
+DNS.1 = hsitx-lab.kro.kr
+EOF
+fi
+# 4-5. 인증서 재생성 (기존 인증서 삭제 후 bootstrap 실행)
 sudo cd ${freeradius_path}/certs
 sudo rm -f *.pem *.der *.csr *.crt *.key *.p12 serial* index.txt*
 sudo ${freeradius_path}/certs/bootstrap
