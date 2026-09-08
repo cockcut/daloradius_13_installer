@@ -119,10 +119,12 @@ fi
 if ! grep -q "\[alt_names\]" ${freeradius_path}/certs/server.cnf; then
     cat << 'EOF' | sudo tee -a ${freeradius_path}/certs/server.cnf
 
-[alt_names]
-DNS.1 = hsitx-lab.kro.kr
 EOF
 fi
+sudo sed -i 's/DNS\.1\s*=\s*radius\.example\.com/DNS.1 = hsitx-lab.kro.kr/' "${freeradius_path}/certs/server.cnf"
+# clinet.cnf Country 항목 변경 
+sudo sed -i 's/countryName\s*=\s*FR/countryName\t\t= KR/' "${freeradius_path}/certs/client.cnf"
+
 # 4-5. 인증서 재생성 (기존 인증서 삭제 후 bootstrap 실행)
 sudo cd ${freeradius_path}/certs
 sudo rm -f *.pem *.der *.csr *.crt *.key *.p12 serial* index.txt*
@@ -141,7 +143,7 @@ sudo sed -i 's|dialect = ${modules.sql.dialect}|dialect = "mysql"|' "$freeradius
 ####sudo sed -i 's|#\s*read_clients = yes|read_clients = yes|' ${freeradius_path}/mods-available/sql
 #Radius Reply시 attribute 전송하게 함.
 sudo cp "$freeradius_path/sites-available/inner-tunnel" "$freeradius_path/sites-available/inner-tunnel.bak"
-sudo sed -i '/use_tunneled_reply/!b; n; c\		if (1) {' "${freeradius_path}/sites-available/inner-tunnel"
+sudo sed -i 's/if (0) {/if (1) {/' "${freeradius_path}/sites-available/inner-tunnel"
 
 sudo sed -i 's|^server = .*|server = "'$MYSQL_HOST'"|' "${freeradius_path}/mods-available/sql"
 sudo sed -i 's|^port = .*|port = "'$MYSQL_PORT'"|' "${freeradius_path}/mods-available/sql"
