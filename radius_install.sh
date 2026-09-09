@@ -112,11 +112,11 @@ sudo sed -i '/^\[server\]/,/^\[/ {
 }' ${freeradius_path}/certs/server.cnf
 # 4-4. server.cnf SAN (Subject Alternative Name) 설정 추가
 # v3_req 또는 server 섹션에 subjectAltName 등록 및 alt_names 섹션 추가
-if ! grep -q "subjectAltName" ${freeradius_path}/certs/server.cnf; then
+if ! sudo grep -q "subjectAltName" ${freeradius_path}/certs/server.cnf; then
     sudo sed -i '/\[ v3_req \]/a subjectAltName = @alt_names' ${freeradius_path}/certs/server.cnf
 fi
 
-if ! grep -q "\[alt_names\]" ${freeradius_path}/certs/server.cnf; then
+if ! sudo grep -q "\[alt_names\]" ${freeradius_path}/certs/server.cnf; then
     cat << 'EOF' | sudo tee -a ${freeradius_path}/certs/server.cnf
 
 EOF
