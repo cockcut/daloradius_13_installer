@@ -220,7 +220,8 @@ sudo systemctl restart radiusd
 sudo systemctl enable radiusd
 # --- 8-2. Radius log파일 권한 설정 ---
 echo "--- 8-2. Radius log파일 권한 설정 중..."
-sudo chmod 744 /var/log/radius/radius.log
+sudo chmod -R 755 /var/log/radius/
+sudo chmod -R 744 /var/log/radius/radius.log
 sudo chmod 644 /var/log/messages
 # --- 8-3. 방화벽 서비스 시작 ---
 echo "--- 8-3. 방화벽 서비스 시작 중..."
