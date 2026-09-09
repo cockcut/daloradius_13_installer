@@ -189,7 +189,7 @@ sudo ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-e
 
 # --- 5-1. freeradius에 Ruckus Radius Doctionary 적용 ---
 echo "--- 5-1. freeradius에 Ruckus Radius Doctionary 적용중..."
-sudo mv dictionary.ruckus /etc/raddb
+sudo mv dictionary.ruckus ${freeradius_path}
 sudo grep -qF '$INCLUDE dictionary.ruckus' "${freeradius_path}/dictionary" || sudo sed -i '$a\$INCLUDE dictionary.ruckus' "${freeradius_path}/dictionary"
 # --- 5-2. MySQL/MariaDB에 Ruckus Radius Doctionary import ---
 echo "--- 5-2. MySQL/MariaDB에 Ruckus Radius Doctionary import중..."
