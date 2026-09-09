@@ -53,17 +53,29 @@ echo ""
 
 
 # MySQL root 비밀번호 접속 테스트
+# 1차: 변수(${MYSQL_ROOT_PASSWORD})로 비밀번호 접속 테스트
 if ! sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT 1" &> /dev/null; then
-    echo "정보: MySQL root 비밀번호 접속에 실패했습니다. 초기 설정을 시도합니다."
+    echo "정보: 기존 설정된 변수 비밀번호로 접속 실패. 초기 비밀번호 설정을 시도합니다."
     
-    # MariaDB 초기 설정 (이전 오류 해결)
-    # MariaDB 설치 후 초기 비밀번호가 없는 상태에서 root 비밀번호를 설정
-    sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
-    if [ $? -ne 0 ]; then
-        echo "오류: MySQL/MariaDB root 비밀번호 설정에 실패했습니다. 스크립트를 종료합니다."
-        exit 1
+    # 비밀번호가 아예 설정되지 않은 초기 상태라고 가정하고 설정 시도
+    if ! sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';" &> /dev/null; then
+        
+        # 1차 실패 시: 기존 비밀번호 직접 입력 요청
+        echo "오류: MySQL/MariaDB root 비밀번호 설정에 실패했습니다. 기존에 설정한 root 패스워드가 있다면 입력하세요."
+        read -s -p "MariaDB root 비밀번호 입력: " MYSQL_ROOT_PASSWORD
+        echo ""  # 줄바꿈
+
+        # 2차: 입력받은 비밀번호로 접속 재시도
+        if ! sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT 1" &> /dev/null; then
+            echo "오류: MySQL/MariaDB root 비밀번호 설정에 실패했습니다. 기존 패스워드를 확인후 초기 설정 마법사를 재실행하세요. 스크립트를 종료합니다."
+            exit 1
+        else
+            echo "정보: 입력한 기존 root 비밀번호로 접속 성공."
+        fi
+
+    else
+        echo "MySQL/MariaDB root 비밀번호 설정 완료."
     fi
-    echo "MySQL/MariaDB root 비밀번호 설정 완료."
 else
     echo "정보: MySQL root 비밀번호 접속에 성공했습니다. 초기 설정을 건너뜁니다."
 fi
