@@ -242,7 +242,6 @@ sudo cd ${WEB_ROOT}/temp
 sudo mv ./README ../radius
 sudo cd ../
 sudo rm -rf ${WEB_ROOT}/temp
-echo "--- 9. 설치에 필요한 임시 파일들을 삭제 완료"
 
 echo "==============================================="
 echo "✅ daloRADIUS 설치가 완료되었습니다!"
