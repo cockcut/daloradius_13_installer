@@ -191,6 +191,25 @@ sudo ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-e
 echo "--- 5-1. freeradius에 Ruckus Radius Doctionary 적용중..."
 sudo mv dictionary.ruckus /etc/raddb
 sudo grep -qF '$INCLUDE dictionary.ruckus' "${freeradius_path}/dictionary" || sudo sed -i '$a\$INCLUDE dictionary.ruckus' "${freeradius_path}/dictionary"
+# --- 5-2. MySQL/MariaDB에 Ruckus Radius Doctionary import ---
+echo "--- 5-2. MySQL/MariaDB에 Ruckus Radius Doctionary import중..."
+# 기존 DB에 동일한 Ruckus Vendor attributes가 있다면 중복 방지를 위해 삭제 후 재등록
+sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE}" -e "DELETE FROM dictionary WHERE Vendor = 'Ruckus';"
+# dictionary.ruckus 파일에서 ATTRIBUTE 라인만 추출하여 DB에 INSERT
+awk '
+BEGIN {
+    vendor = "Ruckus"
+}
+/^ATTRIBUTE/ {
+    # 연속된 공백/탭을 하나로 처리
+    attr_name = $2
+    attr_type = $4
+    
+    if (attr_name != "" && attr_type != "") {
+        printf "INSERT INTO dictionary (Type, Attribute, Vendor) VALUES (\x27%s\x27, \x27%s\x27, \x27%s\x27);\n", attr_type, attr_name, vendor
+    }
+}
+' "${freeradius_path}/dictionary.ruckus" | sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" "${MYSQL_DATABASE}"
 
 # --- 6. daloRADIUS 설정 ---
 echo "--- 6. daloRADIUS 설정 중..."
