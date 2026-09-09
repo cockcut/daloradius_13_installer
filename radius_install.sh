@@ -206,6 +206,7 @@ sudo systemctl start httpd
 sudo systemctl enable httpd
 sudo systemctl restart radiusd
 sudo systemctl enable radiusd
+sudo chmod 755 /var/log/radius/radius.log
 sudo systemctl enable firewalld
 sudo systemctl restart firewalld
 sudo firewall-cmd --add-service=http --permanent
