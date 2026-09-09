@@ -249,13 +249,15 @@ sudo mv ./README ../radius
 sudo cd ../
 sudo rm -rf ${WEB_ROOT}/temp
 
+
 echo "==============================================="
 echo "✅ daloRADIUS 설치가 완료되었습니다!"
-echo "✅ Ruckus Radius Doctionary을 daloRADIUS 웹UI에서 import하세요!"
 echo "웹 브라우저에서 아래 주소로 접속하세요:"
 echo "    http://<서버_IP_주소>/private/radius"
 echo ""
 echo "기본 로그인 정보:"
 echo "    - 사용자명: administrator"
 echo "    - 비밀번호: radius"
+echo "✅ 초기 관리자 비밀번호는 Config > Operators > List Operators 메뉴를 통해 변경하세요!"
+echo "✅ Ruckus Radius Dictionary는 Management > Attributes > Import Vendor Dictionary를 통해 import하세요!"
 echo "==============================================="
