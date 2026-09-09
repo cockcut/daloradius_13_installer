@@ -170,9 +170,10 @@ sudo ln -s ${freeradius_path}/mods-available/sql ${freeradius_path}/mods-enabled
 sudo ln -s ${freeradius_path}/mods-available/sqlcounter ${freeradius_path}/mods-enabled/sqlcounter
 sudo ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-enabled/sqlippool
 
-# --- 5-1. Ruckus Radius Doctionary 복사 ---
-echo "--- 5-1. Ruckus Radius Doctionary 복사 중..."
+# --- 5-1. freeradius에 Ruckus Radius Doctionary 적용 ---
+echo "--- 5-1. freeradius에 Ruckus Radius Doctionary 적용중..."
 sudo mv dictionary.ruckus /etc/raddb
+sudo grep -qF '$INCLUDE dictionary.ruckus' "${freeradius_path}/dictionary" || sudo sed -i '$a\$INCLUDE dictionary.ruckus' "${freeradius_path}/dictionary"
 
 # --- 6. daloRADIUS 설정 ---
 echo "--- 6. daloRADIUS 설정 중..."
