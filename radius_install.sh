@@ -39,15 +39,15 @@ sudo systemctl enable mysqld
 
 read -sp "MySQL/MariaDB root 비밀번호를 입력하세요: " MYSQL_ROOT_PASSWORD
 echo ""
-read -p "Enter MySQL Host (default: localhost): " input_host
+read -p "Enter MySQL Host (엔터누를때 기본값: localhost): " input_host
 MYSQL_HOST=${input_host:-"localhost"}
-read -p "Enter MySQL Port (default: 3306): " input_port
+read -p "Enter MySQL Port (엔터누를때 기본값: 3306): " input_port
 MYSQL_PORT=${input_port:-"3306"}
-read -p "Enter MySQL Database (default: radius): " input_db
+read -p "Enter MySQL Database (엔터누를때 기본값: radius): " input_db
 MYSQL_DATABASE=${input_db:-"radius"}
-read -p "Enter MySQL User (default: radius): " input_user
+read -p "Enter MySQL User (엔터누를때 기본값: radius): " input_user
 MYSQL_USER=${input_user:-"radius"}
-read -s -p "Enter MySQL Password (default: radius12#$): " input_pw
+read -s -p "Enter MySQL Password (엔터누를때 기본값: radius12#$): " input_pw
 MYSQL_PASSWORD=${input_pw:-"radius12#$"}
 echo ""
 
