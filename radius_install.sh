@@ -214,7 +214,7 @@ echo "--- 7.2 mng-rad-attributes-del.php 수정중..."
 sudo cp -f ${WEB_ROOT}/temp/mng-rad-attributes-del.php ${WEB_ROOT}/radius
 
 # --- 7-3. daloRADIUS에 Accounting Table 수정 ---
-echo "--- 7-3. daloRADIUS에 Accounting Table(rep-online.php) 수정..."
+echo "--- 7-3. daloRADIUS에 Accounting Table(rep-online.php) 수정중..."
 sudo cp -f ${WEB_ROOT}/temp/rep-online.php ${WEB_ROOT}/radius
 
 # --- 7-4. daloRADIUS에서 로그 보기위해 수정 ---
