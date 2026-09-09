@@ -201,12 +201,18 @@ sudo sed -i "s/\$configValues\['CONFIG_LOG_FILE'\] = '.*';/\$configValues\['CONF
 sudo chmod -R 755 /var/log/radius/
 
 # --- 8. 서비스 시작 및 방화벽 설정 ---
-echo "--- 8. 서비스 시작 및 방화벽 설정 중..."
+# --- 8-1. 웹, Radius 서비스 시작 ---
+echo "--- 8-1. 웹, Radius 서비스 시작 중..."
 sudo systemctl start httpd
 sudo systemctl enable httpd
 sudo systemctl restart radiusd
 sudo systemctl enable radiusd
+# --- 8-2. Radius log파일 권한 설정 ---
+echo "--- 8-2. Radius log파일 권한 설정 중..."
 sudo chmod 755 /var/log/radius/radius.log
+sudo chmod 644 /var/log/messages
+# --- 8-3. 방화벽 서비스 시작 ---
+echo "--- 8-3. 방화벽 서비스 시작 중..."
 sudo systemctl enable firewalld
 sudo systemctl restart firewalld
 sudo firewall-cmd --add-service=http --permanent
