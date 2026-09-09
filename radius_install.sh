@@ -198,7 +198,6 @@ sudo cp -f ${WEB_ROOT}/temp/rep-online.php ${WEB_ROOT}/radius
 sudo touch /var/log/daloradius.log
 sudo chmod 777 /var/log/daloradius.log
 sudo sed -i "s/\$configValues\['CONFIG_LOG_FILE'\] = '.*';/\$configValues\['CONFIG_LOG_FILE'\] = '\/var\/log\/daloradius.log';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
-sudo chmod -R 755 /var/log/radius/
 
 # --- 8. 서비스 시작 및 방화벽 설정 ---
 # --- 8-1. 웹, Radius 서비스 시작 ---
@@ -209,7 +208,7 @@ sudo systemctl restart radiusd
 sudo systemctl enable radiusd
 # --- 8-2. Radius log파일 권한 설정 ---
 echo "--- 8-2. Radius log파일 권한 설정 중..."
-sudo chmod 755 /var/log/radius/radius.log
+sudo chmod 744 /var/log/radius/radius.log
 sudo chmod 644 /var/log/messages
 # --- 8-3. 방화벽 서비스 시작 ---
 echo "--- 8-3. 방화벽 서비스 시작 중..."
