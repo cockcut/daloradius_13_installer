@@ -170,6 +170,10 @@ sudo ln -s ${freeradius_path}/mods-available/sql ${freeradius_path}/mods-enabled
 sudo ln -s ${freeradius_path}/mods-available/sqlcounter ${freeradius_path}/mods-enabled/sqlcounter
 sudo ln -s ${freeradius_path}/mods-available/sqlippool ${freeradius_path}/mods-enabled/sqlippool
 
+# --- 5-1. Ruckus Radius Doctionary 복사 ---
+echo "--- 5-1. Ruckus Radius Doctionary 복사 중..."
+sudo mv dictionary.ruckus /etc/raddb
+
 # --- 6. daloRADIUS 설정 ---
 echo "--- 6. daloRADIUS 설정 중..."
 sudo cp "${WEB_ROOT}/radius/library/daloradius.conf.php.sample" "${WEB_ROOT}/radius/library/daloradius.conf.php"
@@ -223,6 +227,7 @@ echo "--- 9. 설치에 필요한 임시 파일들을 삭제 완료"
 
 echo "==============================================="
 echo "✅ daloRADIUS 설치가 완료되었습니다!"
+echo "✅ Ruckus Radius Doctionary을 daloRADIUS 웹UI에서 import하세요!"
 echo "웹 브라우저에서 아래 주소로 접속하세요:"
 echo "    http://<서버_IP_주소>/private/radius"
 echo ""
