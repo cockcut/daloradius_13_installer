@@ -33,21 +33,26 @@ sudo unzip "${DALORADIUS_ZIP}"
 sudo mv "./daloradius-1.3" "${WEB_ROOT}/radius"
 
 # --- 3. MySQL/MariaDB 데이터베이스 설정 ---
-echo "--- 3. MySQL/MariaDB 데이터베이스 설정 중..."
+echo "--- 3-1. MySQL/MariaDB 데이터베이스 시작 중..."
 sudo systemctl start mysqld
 sudo systemctl enable mysqld
-
+# --- 3-2. MySQL/MariaDB root 계정 설정 ---
+echo "--- 3-2. MySQL/MariaDB root 계정 설정..."
 read -sp "MySQL/MariaDB root 비밀번호를 입력하세요: " MYSQL_ROOT_PASSWORD
 echo ""
-read -p "Enter MySQL Host (엔터누를때 기본값: localhost): " input_host
+# --- 3-2. daloRadius에서 사용할 DB 설정 ---
+echo "--- 3-2. daloRadius에서 사용할 DB 설정..."
+read -p "Enter MySQL Host (Enter 입력시 : localhost): " input_host
 MYSQL_HOST=${input_host:-"localhost"}
-read -p "Enter MySQL Port (엔터누를때 기본값: 3306): " input_port
+read -p "Enter MySQL Port (Enter 입력시 : 3306): " input_port
 MYSQL_PORT=${input_port:-"3306"}
-read -p "Enter MySQL Database (엔터누를때 기본값: radius): " input_db
+read -p "Enter MySQL Database (Enter 입력시 : radius): " input_db
 MYSQL_DATABASE=${input_db:-"radius"}
-read -p "Enter MySQL User (엔터누를때 기본값: radius): " input_user
+# --- 3-3. daloRadius에서 사용할 DB에 사용자 설정 ---
+echo "--- 3-3. daloRadius에서 사용할 DB에 사용자 설정..."
+read -p "Enter MySQL User (Enter 입력시 : radius): " input_user
 MYSQL_USER=${input_user:-"radius"}
-read -s -p "Enter MySQL Password (엔터누를때 기본값: radius12#$): " input_pw
+read -s -p "Enter MySQL Password (Enter 입력시 : radius12#$): " input_pw
 MYSQL_PASSWORD=${input_pw:-"radius12#$"}
 echo ""
 
