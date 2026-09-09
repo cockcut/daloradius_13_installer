@@ -27,6 +27,7 @@ else
     echo "--- ${DALORADIUS_ZIP} 파일이 이미 존재합니다. 다운로드를 건너뜁니다."
 fi
 
+sudo rm -rf ./temp
 sudo rm -rf "${WEB_ROOT}/daloradius*"
 sudo rm -rf "${WEB_ROOT}/radius*"
 sudo unzip "${DALORADIUS_ZIP}"
