@@ -204,14 +204,20 @@ sudo chown -R apache:apache "${WEB_ROOT}/radius"
 sudo chmod -R 775 "${WEB_ROOT}/radius"
 
 # --- 7. daloRADIUS에 NAS 추가후 radius 재시작 버튼 추가하기 위한 파일 수정 ---
-echo "--- 7. menu-mng-rad-nas.php, mng-rad-nas.php 수정중..."
+# --- 7.1 menu-mng-rad-nas.php, mng-rad-nas.php 수정 ---
+echo "--- 7.1 menu-mng-rad-nas.php, mng-rad-nas.php 수정중..."
 sudo cp -f ${WEB_ROOT}/temp/menu-mng-rad-nas.php ${WEB_ROOT}/radius
 sudo cp -f ${WEB_ROOT}/temp/mng-rad-nas.php ${WEB_ROOT}/radius
 
-# --- 7-1. daloRADIUS에 Accounting Table 수정 ---
+# --- 7.2 mng-rad-attributes-del.php 수정 ---
+echo "--- 7.2 mng-rad-attributes-del.php 수정중..."
+sudo cp -f ${WEB_ROOT}/temp/mng-rad-attributes-del.php ${WEB_ROOT}/radius
+
+# --- 7-3. daloRADIUS에 Accounting Table 수정 ---
+echo "--- 7-3. daloRADIUS에 Accounting Table(rep-online.php) 수정..."
 sudo cp -f ${WEB_ROOT}/temp/rep-online.php ${WEB_ROOT}/radius
 
-# --- 7-3. daloRADIUS에서 로그 보기위해 수정 ---
+# --- 7-4. daloRADIUS에서 로그 보기위해 수정 ---
 sudo touch /var/log/daloradius.log
 sudo chmod 777 /var/log/daloradius.log
 sudo sed -i "s/\$configValues\['CONFIG_LOG_FILE'\] = '.*';/\$configValues\['CONFIG_LOG_FILE'\] = '\/var\/log\/daloradius.log';/" "${WEB_ROOT}/radius/library/daloradius.conf.php"
